@@ -1,18 +1,18 @@
 package com.springboot.springbootrestapi.controller;
 
 import com.springboot.springbootrestapi.bean.Student;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+//defining a base url on class level
+@RequestMapping("student")
 public class StudentController {
 
-    @GetMapping("students/1")
+    @GetMapping("/1")
     public Student getStudentDetails(){
         Student student = new Student(
                 1,
@@ -24,7 +24,7 @@ public class StudentController {
     }
 
 
-    @GetMapping("/student/allstudents")
+    @GetMapping("/allstudents")
     public List<Student> getAllStudentDetails(){
         List<Student> studentList = new ArrayList<>();
         studentList.add(new Student(1,"Aush","Thakur"));
@@ -36,7 +36,7 @@ public class StudentController {
     }
 
     //single path variable
-    @GetMapping("/student/{id}")
+    @GetMapping("/{id}")
     public Student getById(@PathVariable int id){
         List<Student> studentList = new ArrayList<>();
         studentList.add(new Student(1,"Aush","Thakur"));
@@ -47,7 +47,7 @@ public class StudentController {
     }
 
     //multiple Path variables can also be passed
-    @GetMapping("/student/{id}/{first-name}/{last-name}")
+    @GetMapping("/{id}/{first-name}/{last-name}")
     public Student getByDetails(@PathVariable int id, @PathVariable("first-name") String firstName,
                                 @PathVariable("last-name") String lastName){
         return new Student(id,firstName,lastName);
@@ -68,8 +68,41 @@ public class StudentController {
                                @RequestParam String lName){
         return new Student(id,fName,lName);
     }
+    //Post Mapping and RequestBody
+    @PostMapping("/create")
+    public Student createStudent(@RequestBody Student student){
+        System.out.println(student.getId());
+        System.out.println(student.getFirstName());
+        System.out.println(student.getLastName());
+        return student;
+    }
 
-    
+    //With specific/custom HTTP Status code/s
+    @PostMapping("/students/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Student createStudentWithHTTP(@RequestBody Student student){
+        System.out.println(student.getId());
+        System.out.println(student.getFirstName());
+        System.out.println(student.getLastName());
+        return student;
+    }
+
+    //PUT Request
+    @PutMapping("/students/{id}/update")
+    public Student updateStudent(@PathVariable int id, @RequestBody Student student){
+        System.out.println(student.getFirstName());
+        System.out.println(student.getLastName());
+        return student;
+    }
+
+    //delete mapping
+    @DeleteMapping("/{id}")
+    public String deleteStudent(@PathVariable int id){
+
+        return "Student with " + id + " deleted successfully";
+    }
+
+
 
 
 }
