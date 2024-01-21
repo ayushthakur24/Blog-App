@@ -20,7 +20,9 @@ public class Comment {
     private String email;
     private String body;
 
-    //comments(many) -> post(one)
-    @ManyToOne
+    //(many)comments -> (one)post, one post can have multiple comments
+    @ManyToOne(fetch = FetchType.LAZY)
+    //specify foreign key
+    @JoinColumn(name = "post_id",nullable = false)
     private Post post;
 }
