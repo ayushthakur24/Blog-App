@@ -34,5 +34,13 @@ public class Post {
     //orphan removal helps remove child when parent is removed.
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL,orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
+
+
+    //many posts can have or belong to one category
+    //Join column is used in 1 to N mapping, so Foreign key is needed.
+    //Category is a parent table, whereas Post is a child table.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 }
 
