@@ -5,6 +5,10 @@ import com.springboot.blog.payload.PostDto;
 import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.service.PostService;
 import com.springboot.blog.utils.Constants;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -16,7 +20,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
+@Tag(
+        name = "CRUD Rest APIs for Post Resource"
+)
 public class PostController {
+
+
 
     //injecting an interface, making it loosely coupled.
     private PostService postService;
@@ -25,13 +34,36 @@ public class PostController {
         this.postService = postService;
     }
 
-    //create a blog post
+    @Operation(
+            summary = "Create POST Rest API",
+            description = "For POST Http response."
+    )
+
+    @ApiResponse(
+            responseCode = "201",
+            description = "Http Status 201 Created"
+    )
     @PreAuthorize("hasRole('ADMIN')")
+    // @SecurityRequirement annotation, allows to test the APIs in Swagger
+    @SecurityRequirement(
+            name = "Bearer Authentication"
+    )
     @PostMapping
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto){
         return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
     }
 
+
+
+    @Operation(
+            summary = "GET post Rest API",
+            description = "For Get Post Http response."
+    )
+
+    @ApiResponse(
+            responseCode = "201",
+            description = "Http Status 201 Created"
+    )
     @GetMapping
     public PostResponse getAllPosts(
             @RequestParam(value = "pageNo", defaultValue = Constants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
@@ -49,6 +81,9 @@ public class PostController {
 
     //update post by id
     @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(
+            name = "Bearer Authentication"
+    )
     @PutMapping("/{id}")
     public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto,@PathVariable(name = "id") long id){
         PostDto response = postService.updatePost(postDto,id);
@@ -56,6 +91,9 @@ public class PostController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(
+            name = "Bearer Authentication"
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(@PathVariable(name = "id") long id){
         postService.deletePostById(id);
